@@ -1,7 +1,3 @@
-// MVES6 = import('./MVES6.js');
-import { mix } from "./MVES6"
-// MVES6 = require('./MVES6.js');
-
 function map_point(P, Q, A, B, X)
 {
     let alpha;
@@ -15,16 +11,14 @@ function map_point(P, Q, A, B, X)
     else
         alpha = (X[0] - P[0]) / (Q[0] - P[0]);
 
-    // return MVES6.mix(A, B, alpha);
-    let a = MVES6.mix(A, B, alpha)
+    return mix(A, B, alpha);
 }
 
-P = [0,0];
-Q = [5,5];
-X = [2,2];
+// P = [0,0];
+// Q = [5,5];
+// X = [2,2];
 
-A = [0,0];
-B = [6,0];
+// A = [0,0];
+// B = [6,0];
 
-// console.log("ASDASDSD");
-console.log(map_point(P, Q, A, B, X));
+// console.log(map_point(P, Q, A, B, X));
