@@ -22,7 +22,7 @@ window.onload = function init()
     let vertices = [];
     let colors = [];
     
-    let image_dimensions = [100, 100];
+    let image_dimensions = [512, 512];
     let n_t = 100;
     
     let complex_mapping_st = [-2, -2];
@@ -37,39 +37,52 @@ window.onload = function init()
     {
         for(let y = 0; y <= image_dimensions[1]; y++)
         {
-            vertices.push(map_point([0, 0], image_dimensions, grid_mapping_st, grid_mapping_end, [x, y]));
+            // vertices.push(map_point([0, 0], image_dimensions, grid_mapping_st, grid_mapping_end, [x, y]));
+            let v_x = map_point(0, image_dimensions[0], grid_mapping_st[0], grid_mapping_end[0], x);
+            let v_y = map_point(0, image_dimensions[1], grid_mapping_st[1], grid_mapping_end[1], y);
+            vertices.push([v_x, v_y]);
+
+
             colors.push(vec4(0, 0, 1, 1));
             
-            if (x == 0 && y == 100)
-            {
-                console.log(x, y);
-                console.log(map_point([0, 0], [100, 100], [-1, -1], [1, 1], [100, 0]));
-            }
+            // if (x == 0 && y == 100)
+            // {
+            //     console.log(x, y);
+            //     console.log(map_point([0, 0], [100, 100], [-1, -1], [1, 1], [100, 0]));
+            // }
 
-            let c = map_point([0, 0], image_dimensions, complex_mapping_st, complex_mapping_end, [x, y]);
-            let current_num = math.complex(c[0], c[1]);
+            // let c = map_point([0, 0], image_dimensions, complex_mapping_st, complex_mapping_end, [x, y]);
+            let c_x = map_point(0, image_dimensions[0], complex_mapping_st[0], complex_mapping_end[0], x);
+            let c_y = map_point(0, image_dimensions[1], complex_mapping_st[1], complex_mapping_end[1], y);
+
+            let current_num = math.complex(c_x, c_y);
             let mag = 0;
 
             for(let n = 1; n <= n_t; n++)
             {
-                mag = math.sqrt( (current_num.re)^2 + (current_num.im)^2 );
+                mag = math.sqrt( Math.pow(current_num.re,2) + Math.pow(current_num.im,2) );
                 if (mag > escape_time)
                 {
                     if (n == 1)
                     {
-                        colors.pop();
-                        vertices.pop();
+                        // colors.pop();
+                        // vertices.pop();
+                        colors[colors.length - 1] = vec4(1, 0, 0, 1);
                     }
                     else
+                    {
+                        // colors.pop();
+                        // vertices.pop(); 
                         colors[colors.length - 1] = vec4(1, 0, 0, 1);
-                    
+                    }
                     break;
                 }
-                current_num = math.add(current_num, math.complex(c[0], c[1]))
+                // current_num = math.add(current_num, math.complex(c[0], c[1]))
+                current_num = math.add(math.square(current_num), math.complex(c_x, c_y));
             }
         }
     }
-    // console.log(vertices);
+    console.log(vertices);
 
 
 
