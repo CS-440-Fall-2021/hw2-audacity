@@ -73,7 +73,21 @@ window.onload = function init()
                     {
                         // colors.pop();
                         // vertices.pop(); 
-                        colors[colors.length - 1] = vec4(1, 0, 0, 1);
+                        // colors[colors.length - 1] = vec4(1, 0, 0, 1);
+                        if (n < (n_t/2))
+                        {
+                            let red = map_point(1, n_t, 1, 0, n);
+                            let green = map_point(1, n_t, 0, 1, n);
+
+                            colors[colors.length - 1] = vec4(red, green, 0, 1);
+                        }
+                        else if (n >= (n_t/2))
+                        {
+                            let green = map_point(1, n_t, 1, 0, n);
+                            let blue = map_point(1, n_t, 0, 1, n);
+
+                            colors[colors.length - 1] = vec4(0, green, blue, 1);
+                        }
                     }
                     break;
                 }
