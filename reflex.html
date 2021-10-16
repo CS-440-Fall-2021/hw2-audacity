@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UT-8">
+    <title>Reflex Game</title>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        #version 300 es
+
+        in vec4 vPosition;  // attribute
+        in vec3 vColor;  // attribute
+        out vec4 vtxColor;
+
+        void main()
+        {
+            gl_Position = vec4(vPosition.xyz, 1); // vertex position in CAMERA COORDINATES
+            gl_PointSize = 10.0;
+            vtxColor = vec4(vColor, 1.0);
+        }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        #version 300 es
+        precision highp float;  // lowp, mediump
+
+        in vec4 vtxColor;
+        out vec4 fragColor;
+
+        void main()
+        {
+            fragColor = vtxColor;
+        }
+    </script>
+
+    <script src="http://interactivecomputergraphics.com/8E/Code%20update/Common/initShadersES6.js"></script>
+    <script src="http://interactivecomputergraphics.com/8E/Code%20update/Common/MVES6.js"></script>
+
+    <script type="text/javascript" src="reflex.js"></script>
+</head>
+
+<body>
+
+    <h1>Reflex Game</h1>
+    <h1 id="score" style="margin-bottom: 0;"></h1>
+
+    <br>
+
+    <canvas id="gl-canvas" width="512" height="512" style="border:1px solid #000000;">
+        Oops ... your browser doesn't support the HTML5 canvas element
+    </canvas>
+    <br>
+
+
+</body>
+
+</html>

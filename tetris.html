@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UT-8">
+    <title>Tetrix</title>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        #version 300 es
+
+        in vec4 vPosition;  // attribute
+        in vec3 vColor;  // attribute
+        uniform float angle;
+        uniform float axis;
+        out vec4 vtxColor;
+
+        void main()
+        {
+            float c = cos(angle);                         
+            float s = sin(angle);
+            mat3 rotation;
+            if (axis == 0.0) {
+                rotation = mat3(1,  0,  0,
+                                 0,  c,  -s,
+                                 0, s,  c);                         
+            } else if (axis == 1.0) {
+                rotation = mat3(c,  0,  s,               
+                                 0,  1,  0,               
+                                 -s, 0,  c);   
+            } else {
+                rotation = mat3(c, -s, 0,
+                                 s,  c, 0,
+                                 0,  0, 1);
+            }
+            gl_Position = vec4(vPosition.xyz * rotation * 0.5, 1); // vertex position in CAMERA COORDINATES
+            gl_PointSize = 10.0;
+            vtxColor = vec4(vColor, 1.0);
+        }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        #version 300 es
+        precision highp float;  // lowp, mediump
+
+        in vec4 vtxColor;
+        out vec4 fragColor;
+
+        void main()
+        {
+            fragColor = vtxColor;
+        }
+    </script>
+
+    <script src="http://interactivecomputergraphics.com/8E/Code%20update/Common/initShadersES6.js"></script>
+    <script src="http://interactivecomputergraphics.com/8E/Code%20update/Common/MVES6.js"></script>
+
+    <script type="text/javascript" src="tetris.js"></script>
+</head>
+
+<body>
+
+    <h1 style="margin-bottom: 0;">Tetrix</h1>
+    <div style="display: flex; flex-direction: column; width: 25%;">
+
+        <div style="display: flex">
+            <h1 style="margin-right: 20px;">Level</h1>
+            <input type="range" min="0" value="0" max="8" class="slider" step="1" id="myRange">
+        </div>
+        <div style="display: flex; margin-bottom: 20px;">
+            <h1 style="margin-right: 20px; margin-top: 0; margin-bottom: 0;">Axis of rotation</h1>
+            <select name="axis" id="axis">
+                <option value="0">X-axis</option>
+                <option value="1">Y-axis</option>
+                <option value="2">Z-axis</option>
+            </select>
+        </div>
+    </div>
+    <canvas id="gl-canvas" width="512" height="512" style="border:1px solid #000000;">
+        Oops ... your browser doesn't support the HTML5 canvas element
+    </canvas>
+</body>
+
+</html>
