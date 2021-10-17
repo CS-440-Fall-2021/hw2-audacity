@@ -8,30 +8,31 @@
     <script id="vertex-shader" type="x-shader/x-vertex">
         #version 300 es
 
-        in vec4 vPosition;  // attribute
-        in vec3 vColor;  // attribute
-        uniform float angle;
-        uniform float axis;
-        out vec4 vtxColor;
+        in vec4 vPosition;  // attribute, position of vertex
+        in vec3 vColor;  // attribute, color of vertex
+        out vec4 vtxColor; // color for fragment shader
+        uniform float angle; // angle of rotation
+        uniform float axis; // axis of rotation
 
         void main()
         {
             float c = cos(angle);                         
             float s = sin(angle);
             mat3 rotation;
-            if (axis == 0.0) {
+            if (axis == 0.0) { // x-axis
                 rotation = mat3(1,  0,  0,
                                  0,  c,  -s,
                                  0, s,  c);                         
-            } else if (axis == 1.0) {
+            } else if (axis == 1.0) { // y-axis
                 rotation = mat3(c,  0,  s,               
                                  0,  1,  0,               
                                  -s, 0,  c);   
-            } else {
+            } else { // z-axis
                 rotation = mat3(c, -s, 0,
                                  s,  c, 0,
                                  0,  0, 1);
             }
+            // apply rotation
             gl_Position = vec4(vPosition.xyz * rotation * 0.5, 1); // vertex position in CAMERA COORDINATES
             gl_PointSize = 10.0;
             vtxColor = vec4(vColor, 1.0);
@@ -42,7 +43,7 @@
         #version 300 es
         precision highp float;  // lowp, mediump
 
-        in vec4 vtxColor;
+        in vec4 vtxColor; // color from vertex shader 
         out vec4 fragColor;
 
         void main()

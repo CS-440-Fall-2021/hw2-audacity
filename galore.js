@@ -1,51 +1,61 @@
 "use strict";
 
 let gl; // WebGL "context"
-let vBuffer;
-let cBuffer;
-let total = 0;
-let shapeMode = false;
-let points = [];
-let pColors = [];
-let triangles = [];
-let tColors = [];
-let squares = [];
-let sColors = [];
+let vBuffer; // vertex buffer
+let cBuffer; // color buffer
+let shapeMode = false; // false represents Triangle, true represents square
+let points = []; // array to store points
+let pColors = []; // array to store point colors
+let triangles = []; // array to store triangle points
+let tColors = []; // array to store color for each triangle vertex
+let squares = []; // array to store square points
+let sColors = []; // array to store color for each square vertex
 
+// function to scale canvas coordinates within the WebGL limits (-1, 1)
 function scaleVertices(x, y) {
   if (x < 257 && y < 257) {
+    // second quadrant of canvas
     x = -(257 - x);
     y = 257 - y;
   } else if (x < 257 && y > 257) {
+    // third quadrant of canvas
     x = -(257 - x);
     y = 257 - y;
   } else if (x > 257 && y < 257) {
+    // first quadrant of canvas
     x = x - 257;
     y = 257 - y;
   } else if (x > 257 && y > 257) {
+    // fourth quadrant of canvas
     x = x - 257;
     y = -(y - 257);
   }
   return [x / 257, y / 257];
 }
 
+// function to add vertices of square (4 triangles)
 function prepareSquare(d, c, b, a, color) {
+  // triangle ABC
   squares.push(a);
   squares.push(b);
   squares.push(c);
+  // triangle BCD
   squares.push(b);
   squares.push(c);
   squares.push(d);
+  // triangle CDA
   squares.push(c);
   squares.push(d);
   squares.push(a);
+  // push same color for each vertex
   for (let i = 0; i < 9; i++) {
     sColors.push(color);
   }
-  pColors = [];
+  pColors = []; // reset point colors
 }
 
 window.onload = function init() {
+  // find mode HTML element and add text to it
   let mode = document.getElementById("mode");
   mode.innerHTML = "Current Mode: " + (!shapeMode ? "Triangle" : "Square");
 
@@ -62,15 +72,15 @@ window.onload = function init() {
   let program = initShaders(gl, "vertex-shader", "fragment-shader");
   gl.useProgram(program);
 
-  // Associate out shader variables with our data buffer
+  // setting up vertex buffer
   vBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, 0, gl.STATIC_DRAW);
-  // Load the data into the GPU and bind to shader variables.
   let positionLoc = gl.getAttribLocation(program, "vPosition");
   gl.vertexAttribPointer(positionLoc, 3, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(positionLoc);
 
+  // setting up color buffer
   cBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, 0, gl.STATIC_DRAW);
@@ -78,26 +88,33 @@ window.onload = function init() {
   gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(colorLoc);
 
+  // function called when click event takes place on canvas
   function getCursorPosition(canvas, event) {
-    const rect = canvas.getBoundingClientRect();
-    let x = event.clientX - rect.left;
-    let y = event.clientY - rect.top;
-    let scaledVertices = scaleVertices(x, y);
+    const rect = canvas.getBoundingClientRect(); // get canvas bounds
+    let x = event.clientX - rect.left; // get click x
+    let y = event.clientY - rect.top; // get click y
+    let scaledVertices = scaleVertices(x, y); // scale vertices to WebGL limits
     x = scaledVertices[0];
     y = scaledVertices[1];
 
+    // add points and point colors to points and point color arrays
     if (points.length < 3 && !shapeMode) points.push(vec3(x, y, 0.0));
     else if (points.length < 4 && shapeMode) points.push(vec3(x, y, 0.0));
     pColors.push(vec3(1.0, 1.0, 1.0));
 
-    let shapeColor = vec3(Math.random(), Math.random(), Math.random());
+    // add points to triangle array
+    let shapeColor = vec3(Math.random(), Math.random(), Math.random()); // shape color
+    // if shapeMode = Triangle and 3 points
     if (!shapeMode && points.length == 3) {
+      // add points and colors
       for (let i = 0; i < 3; i++) {
         triangles.push(points.pop());
         tColors.push(shapeColor);
       }
-      pColors = [];
+      pColors = []; // reset point colors
+      // if shapeMode is Square and 4 points
     } else if (shapeMode && points.length == 4) {
+      // add points and colors
       prepareSquare(
         points.pop(),
         points.pop(),
@@ -110,23 +127,27 @@ window.onload = function init() {
     render();
   }
 
-  // const canvas = document.querySelector("canvas");
+  // add event listener for click inside canvas
   canvas.addEventListener("mousedown", function (e) {
     getCursorPosition(canvas, e);
   });
 
-  document.addEventListener("keydown", logKey);
+  document.addEventListener("keydown", logKey); // event listener for keypress
 
   function logKey(e) {
+    // if "r" or "R" pressed
     if (e.code == "KeyR") {
+      //reset everything
       points = [];
       squares = [];
       triangles = [];
       shapeMode = false;
       mode.innerHTML = "Current Mode: " + (!shapeMode ? "Triangle" : "Square");
       render();
-    } else if (e.code == "KeyT") {
-      shapeMode = !shapeMode;
+    }
+    // if "t" or "T" pressed
+    else if (e.code == "KeyT") {
+      shapeMode = !shapeMode; // toggle shape
       mode.innerHTML = "Current Mode: " + (!shapeMode ? "Triangle" : "Square");
     }
   }
@@ -136,6 +157,7 @@ window.onload = function init() {
 
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
+  // render points
   if (points.length > 0) {
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
@@ -143,6 +165,7 @@ function render() {
     gl.bufferData(gl.ARRAY_BUFFER, flatten(pColors), gl.STATIC_DRAW);
     gl.drawArrays(gl.POINTS, 0, points.length);
   }
+  // render triangles
   if (triangles.length > 0) {
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, flatten(triangles), gl.STATIC_DRAW);
@@ -150,7 +173,7 @@ function render() {
     gl.bufferData(gl.ARRAY_BUFFER, flatten(tColors), gl.STATIC_DRAW);
     gl.drawArrays(gl.TRIANGLES, 0, triangles.length);
   }
-
+  // render squares
   if (squares.length > 0) {
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, flatten(squares), gl.STATIC_DRAW);

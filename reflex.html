@@ -8,9 +8,9 @@
     <script id="vertex-shader" type="x-shader/x-vertex">
         #version 300 es
 
-        in vec4 vPosition;  // attribute
-        in vec3 vColor;  // attribute
-        out vec4 vtxColor;
+        in vec4 vPosition;  // attribute, position of vertex
+        in vec3 vColor;  // attribute, color of vertex
+        out vec4 vtxColor; // color for fragment shader
 
         void main()
         {
@@ -24,7 +24,7 @@
         #version 300 es
         precision highp float;  // lowp, mediump
 
-        in vec4 vtxColor;
+        in vec4 vtxColor; // color from vertex shader 
         out vec4 fragColor;
 
         void main()
