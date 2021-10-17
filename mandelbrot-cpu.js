@@ -66,14 +66,14 @@ window.onload = function init()
                     // Else assign interpolated value
                     else
                     {
-                        if (n < (n_t/2))
+                        if (n < (n_t/7))
                         {
                             let red = map_point(1, n_t, 1, 0, n);
                             let green = map_point(1, n_t, 0, 1, n);
 
                             colors[colors.length - 1] = vec4(red, green, 0, 1);
                         }
-                        else if (n >= (n_t/2))
+                        else
                         {
                             let green = map_point(1, n_t, 1, 0, n);
                             let blue = map_point(1, n_t, 0, 1, n);
