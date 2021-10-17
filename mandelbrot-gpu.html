@@ -52,6 +52,9 @@
 
     out vec4 fragColor;
 
+    /* Coloring scheme taken from:
+    https://rosettacode.org/wiki/Mandelbrot_set#GLSL
+    */
     vec3 color(int iteration, float sqLengthZ) 
     {
       // Assign black color if not escaping
@@ -61,7 +64,6 @@
       // Else interpolate
       float ratio = (float(iteration) - log2(log2(sqLengthZ))) / float(n_t);
       
-      //return mix(vec3(1.0, 0.0, 0.0), vec3(1.0, 1.0, 0.0), sqrt(ratio));
       return (vec3(1.0, 0.0, 0.0)*(1.0 - sqrt(ratio))) +  (vec3(1.0, 1.0, 0.0) * sqrt(ratio));
     }
 
