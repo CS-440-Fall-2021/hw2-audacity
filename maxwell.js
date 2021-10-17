@@ -3,9 +3,7 @@
 let gl;  // WebGL "context"
 
 window.onload = function init()
-{
-    // alert("Hello World!");
-    
+{    
     let canvas = document.getElementById( "gl-canvas" );
     gl = canvas.getContext('webgl2');
     if (!gl) alert( "WebGL 2.0 isn't available" );
@@ -18,7 +16,7 @@ window.onload = function init()
     let program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
 
-    // Compute data.
+    // Set triangle's vertices and their color.
     let vertices = [vec2(-1, -1), vec2(0, 1), vec2(1, -1)];
     let colors = [vec4(0, 0, 1, 1), vec4(1, 0, 0, 1), vec4(0, 1, 0, 1)]
 

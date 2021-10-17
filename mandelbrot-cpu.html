@@ -16,8 +16,13 @@
     void
     main()
     {
+
+        // Assign vertex position
         gl_Position = vPosition;
+        
         gl_PointSize = 1.0;
+        
+        // Assign color to output variable
         vertex_color = vColor;
     }
     </script>
@@ -33,6 +38,7 @@
     void
     main()
     {
+        // Assign color
         fragColor = vertex_color;
     }
     </script>
@@ -47,7 +53,7 @@
 
   
   <body>
-    <!-- <h1>Mandelbrot CPU</h1> -->
+    <h1>Mandelbrot CPU</h1>
     
     <canvas id="gl-canvas" width="512" height="512">
       Oops ... your browser doesn't support the HTML5 canvas element

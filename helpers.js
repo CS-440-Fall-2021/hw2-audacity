@@ -1,3 +1,5 @@
+// Maps a point on one range to another (X on P-Q to A-B)
+
 function map_point(P, Q, A, B, X)
 {
     let alpha;
@@ -13,12 +15,3 @@ function map_point(P, Q, A, B, X)
 
     return mix(A, B, alpha);
 }
-
-// P = [0,0];
-// Q = [5,5];
-// X = [2,2];
-
-// A = [0,0];
-// B = [6,0];
-
-// console.log(map_point(P, Q, A, B, X));
